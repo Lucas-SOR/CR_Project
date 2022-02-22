@@ -1,0 +1,9 @@
+SELECT ?border ?borderLabel ?country1Label ?country2Label ?isLandBorder ?isMaritimeBorder ?constraint {
+  ?border wdt:P31 wd:Q12413618 ;
+          wdt:P17 ?country1 , ?country2 .
+  FILTER (?country1 != ?country2)
+  BIND (EXISTS {?border wdt:P31 wd:Q15104814} AS ?isLandBorder)
+  BIND (EXISTS {?border wdt:P31 wd:Q3089219} AS ?isMaritimeBorder)
+  BIND ((?isLandBorder || ?isMaritimeBorder) AS ?constraint)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+  } ORDER BY ?country1Label
