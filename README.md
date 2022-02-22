@@ -28,7 +28,7 @@ python3 main.py
 
 2. Use the front-end with streamlit
 ```bash
-streamlit streamlit.py
+streamlit run streamlit.py
 ```
 
 ## :package: Organisation of the project
@@ -52,15 +52,15 @@ streamlit streamlit.py
 │   └── sparql_query.txt
 ├── queries.py #Querying DBPedia & Wikidata for data
 ├── requirements.txt 
-├── streamlit.py #Frontend for the game
+├── streamlit.py #Front-end for the game
 └── test.py
 ```
 
 ### TO DO LIST
 
-- [x] Packaging du code @ArianeDlns
-- [ ] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR
-- [ ] Pays adjacents @ArianeDlns
+- [x] Packaging du code @ArianeDlns -> `main.py`
+- [ ] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR -> `game.py`
+- [x] Pays adjacents @ArianeDlns  -> `queries/sparql_wikidata_query.txt`
 - [ ] MVP du jeu @ArianeDlns @Lucas-SOR
 - [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
 - [ ] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
