@@ -30,4 +30,15 @@ The data that will be used to build this game will be taken from [DBpedia](https
 └── sparql_test.ipynb
 ```
 
+### TO DO LIST
+
+
+- [ ] Packaging du code @ArianeDlns
+- [ ] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR
+- [ ] Pays adjacents @ArianeDlns
+- [ ] MVP du jeu @ArianeDlns @Lucas-SOR
+- [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
+- [ ] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
+- [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
+
 ## References 
