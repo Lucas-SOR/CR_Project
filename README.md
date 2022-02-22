@@ -14,6 +14,22 @@ The data that will be used to build this game will be taken from [DBpedia](https
 ## :runner: Running the code
 ``sparql_test.ipynb`` allows to generate the dataframe and country_flags for this project 
 
+First install the required dependancies: 
+```bash
+pip install -r requirements.txt
+```
+
+To run the game, you can either: 
+
+1. Run the command line interface of the game 
+```bash
+python3 main.py
+```
+
+2. Use the front-end with streamlit
+```bash
+streamlit streamlit.py
+```
 
 ## :package: Organisation of the project
 
@@ -27,18 +43,28 @@ The data that will be used to build this game will be taken from [DBpedia](https
 │   ├── Albania_flag.png
 │   ├── .... 
 │   └── Zimbabwe_flag.png
-└── sparql_test.ipynb
+├── game.py # Game mechanisms
+├── main.py # CLI for the game 
+├── notebooks
+│   ├── sparql_test.ipynb 
+│   └── tests.ipynb
+├── queries
+│   └── sparql_query.txt
+├── queries.py #Querying DBPedia & Wikidata for data
+├── requirements.txt 
+├── streamlit.py #Frontend for the game
+└── test.py
 ```
 
 ### TO DO LIST
 
-
-- [ ] Packaging du code @ArianeDlns
+- [x] Packaging du code @ArianeDlns
 - [ ] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR
 - [ ] Pays adjacents @ArianeDlns
 - [ ] MVP du jeu @ArianeDlns @Lucas-SOR
 - [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
 - [ ] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
 - [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
+- [ ] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
 
 ## References 

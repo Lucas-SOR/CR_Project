@@ -1,0 +1,14 @@
+SELECT DISTINCT ?country  ?capital ?country_name ?capital_name ?country_flag ?country_abstract
+    WHERE {
+      ?country a yago:WikicatCountries , dbo:Country.
+      ?country dbo:capital ?capital.
+      ?country rdfs:label ?country_name.
+      ?capital rdfs:label ?capital_name.
+      ?country dbo:thumbnail ?country_flag.
+      ?country dbo:abstract ? ?country_abstract.
+
+      FILTER(lang(?country_name) = 'en')
+      FILTER(lang(?capital_name) = 'en')
+      FILTER(lang(?country_abstract) = 'en')
+    } 
+    ORDER BY ?country
