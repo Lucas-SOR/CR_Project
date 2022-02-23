@@ -20,6 +20,8 @@ def start_game(verbose: bool=True):
 
     userInput = input("\nHow many rounds do you want to play? ")
     NB_ROUNDS = userInput
+    userInput = input("\nHow many player are there? ")
+    NB_PLAYERS = userInput
 
 if __name__ == '__main__':
     playing = True 
