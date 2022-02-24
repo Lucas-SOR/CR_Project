@@ -138,3 +138,5 @@ credentials.yml
 data/
 solution/
 references/
+notebook/s2v_model
+notebook/._s2v_model
