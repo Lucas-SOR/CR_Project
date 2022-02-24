@@ -4,8 +4,13 @@ from queries import *
 # Testing queries
 # ----------------------------------------------------------------------------------------------------------------------
 
-def test_queries():
+def test_queries_countries():
     df = query_sparql()
+    assert len(df) == 184
+
+def test_queries_countries():
+    df = query_wikidata()
+    assert len(df) == 1120
     
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -13,4 +18,4 @@ def test_queries():
 # ----------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    test_queries()
+    test_queries_countries()
