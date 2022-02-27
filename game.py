@@ -175,4 +175,5 @@ if __name__ == '__main__':
     country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
     print("\nWhat is the capital of " + country_name + " ? ")
     user_input = input('The choices are: ' + ', '.join(country_capital_list) + '\n ')
-    evaluate_country_capital_question(country_capital_list, d, user_input)
+    b = evaluate_country_capital_question(country_capital_list, d, user_input)
+    print(b)
