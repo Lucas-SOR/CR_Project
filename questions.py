@@ -359,32 +359,43 @@ def get_abstract_question_from_index(df_countries, index, s2v, sentencizer, ner_
     - verify_answer : a dict such that verify_answer[answer] == True if and only if the answer is the good one for the question
     """
     
-    country_name = df_countries["country_name"][index]
+    try :
 
-    summarized_abstract = df_countries["country_summarized_abstract"][index]
-    
-    sentence_keyword_dict = extract_person_gpe(summarized_abstract, ner_model, sentencizer, country_name)
+        country_name = df_countries["country_name"][index]
 
-    sentence = random.choice(list(sentence_keyword_dict.keys()))
+        summarized_abstract = df_countries["country_summarized_abstract"][index]
+        
+        sentence_keyword_dict = extract_person_gpe(summarized_abstract, ner_model, sentencizer, country_name)
 
-    keyword = random.choice(sentence_keyword_dict[sentence])
+        sentence = random.choice(list(sentence_keyword_dict.keys()))
 
-    question = sentence.replace(keyword, "_____")
+        keyword = random.choice(sentence_keyword_dict[sentence])
 
-    answers = generate_distractors_from_word(keyword, s2v)
+        question = sentence.replace(keyword, "_____")
 
-    answers.append(keyword)
+        question = "Fill in the blank : " + question
 
-    random.shuffle(answers)
+        answers = generate_distractors_from_word(keyword, s2v)
 
-    verify_answer = {}
-    for answer in answers : 
-        if answer == keyword:
-            verify_answer[answer] = True
-        else:
-            verify_answer[answer] = False
-    
-    return question, answers, verify_answer
+        answers.append(keyword)
+
+        random.shuffle(answers)
+
+        verify_answer = {}
+        for answer in answers : 
+            if answer == keyword:
+                verify_answer[answer] = True
+            else:
+                verify_answer[answer] = False
+        
+        return question, answers, verify_answer
+
+    except :
+        BADLY_GENERATED_QUESTION = "Question was badly generated, please validate any answer to validate and move on"
+        BADLY_GENERATED_ANSWERS = ["Any answer" for _ in range(4)]
+        BADLY_GENERATED_D = {k : True for k in BADLY_GENERATED_ANSWERS}
+
+        return BADLY_GENERATED_QUESTION, BADLY_GENERATED_ANSWERS, BADLY_GENERATED_D
 
    
 
