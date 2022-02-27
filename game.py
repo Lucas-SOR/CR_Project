@@ -4,10 +4,11 @@ import os
 import pandas as pd
 import numpy as np
 import random
+from questions import *
+from queries import load_fulldata
 
 global NB_ROUNDS
 global NB_PLAYERS
-
 
 def start_game(verbose: bool = True):
     """
@@ -16,6 +17,7 @@ def start_game(verbose: bool = True):
     if verbose:
         print("=============================")
         spinner = Spinner('Loading game |||')
+        df_countries = pd.read_csv('data/countries.csv')
         start_time = time.time()
         while time.time() - start_time < 5:
             time.sleep(0.2)
@@ -24,32 +26,30 @@ def start_game(verbose: bool = True):
         time.sleep(0.2)
         os.system('cls' if os.name == 'nt' else 'clear')
 
-    userInput = input("\nHow many rounds do you want to play? ")
-    NB_ROUNDS = userInput
-    userInput = input("\nHow many player are there? ")
-    NB_PLAYERS = userInput
+        userInput = input("\nHow many rounds do you want to play? ")
+        NB_ROUNDS = userInput
+        userInput = input("\nHow many player are there? ")
+        NB_PLAYERS = userInput
 
+    country_list = get_country_list(df_countries)
+    # Pick a random first country 
+    country_name = country_list[np.random.randint(0, len(country_list))]
 
-def generate_population_question(country_name, error_margin, country_population_dict):
-    """
-    From a country name, asks the population of the country given an error_margin
+    if verbose:
+        print("\nLet's starting in ....") 
+        spinner = Spinner('')
+        start_time = time.time()
+        while time.time() - start_time < 2:
+            time.sleep(0.2)
+            spinner.next()
+        print('\n')
+        print(country_name)
+        time.sleep(1)
+    return df_countries, country_name
 
-    Function arguments :
-    - country_name : str of the name of the country
-    - error_margin : number between 0 and 1 defining if the answer is "close enough" to the real number
-    - country_population_dict : a dict such that dict[country_name] = country_population
-
-    Returns :
-    - interval : the acceptation interval (if the input is in the interval, the answer is considered True)
-    """
-
-    country_population = country_population_dict[country_name]
-    lower = int((1-error_margin) * country_population)
-    higher = int((1+error_margin) * country_population)
-    interval = [lower, higher]
-
-    return interval
-
+# ----------------------------------------------------------------------------------------------------------------------
+# UTILS
+# ----------------------------------------------------------------------------------------------------------------------
 
 def get_country_list(df_countries):
     """
@@ -85,95 +85,59 @@ def get_country_capital_dict(df_countries):
     return country_capital_dict
 
 
-def evaluate_population_question(interval, user_input):
-    """
-    Given a population question, evaluates the user answer
-
-    Function arguments :
-    - interval : the acceptation interval (if the input is in the interval, the answer is considered True)
-    - user_input : the str input that the user made to answer the population question (here we suppose that it is the guessed population of the country)
-
-    Returns : 
-    - evaluation : a bool that is True if the answer is accepted and False else
-    """
-    lower = interval[0]
-    higher = interval[1]
-    guessed_population = int(user_input)
-    evaluation = (guessed_population >= lower) and (
-        guessed_population <= higher)
-
-    return evaluation
-
-
-def generate_country_capital_question(country_name, country_list, country_capital_dict):
-    """
-    From a country name, generates a multiple answer question with 4 capital and one correct capital to guess
-
-    Function arguments :
-    - country_name : str of the name of the country
-    - country_list : a list of all country names
-    - country_capital dict : a dict such that dict[country_name] = country_capital
-
-    Returns :
-    - list of the country_capital str
-    - dict such that dict[country_capital] = True if the capital is correct and False in the other cases
-    """
-
-    correct_capital = country_capital_dict[country_name]
-
-    country_capital_list = [correct_capital]
-
-    for _ in range(3):
-        found = False  # In case the random country is already selected
-        while not found:
-            random_country_name = country_list[np.random.randint(
-                0, len(country_list))]
-            random_capital_name = country_capital_dict[random_country_name]
-            found = random_capital_name not in country_capital_list
-        country_capital_list.append(random_capital_name)
-
-    random.shuffle(country_capital_list)
-
-    d = {}
-    for country_capital in country_capital_list:
-        if country_capital == correct_capital:
-            d[country_capital] = True
-        else:
-            d[country_capital] = False
-
-    return country_capital_list, d
-
-
-def evaluate_country_capital_question(country_capital_list, d, user_input):
-    """
-    Given a country capital question, evaluates the user answer
-
-    Function arguments :
-    - country_capital_list : list of the country_capital
-    - d : dict such that dict[country_capital] = True if the country_capital is correct and False else
-    - user_input : the str input that the user made to answer the country_capital question (here we suppose that it is the index of the country_capital in the country_capital_list)
-
-    Returns : 
-    - evaluation : a bool that is True if the answer is accepted and False else
-    """
-
-    user_country_capital_proposal = country_capital_list[int(user_input)]
-    evaluation = d[user_country_capital_proposal]
-    return evaluation
-
-
 if __name__ == '__main__':
     playing = True
-    start_game()
 
-    df_countries = pd.read_csv('data/countries.csv')
+    # Loading the countries and first country
+    try: 
+        df_countries, country_name = start_game()
+    except FileNotFoundError:
+        countries = load_fulldata()
+        countries.to_csv('data/countries.csv')
+        df_countries, country_name = start_game()
 
     country_list = get_country_list(df_countries)
-    country_name = country_list[np.random.randint(0, len(country_list))]
     country_capital_dict = get_country_capital_dict(df_countries)
 
+<<<<<<< HEAD
     country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
     print("\nWhat is the capital of " + country_name + " ? ")
     user_input = input('The choices are: ' + ', '.join(country_capital_list) + '\n ')
     b = evaluate_country_capital_question(country_capital_list, d, user_input)
     print(b)
+=======
+    ROUND = 0
+    WINNING = True
+    while WINNING:
+        country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
+        print("\nWhat is the capital of " + country_name + " ? ")
+        user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+        try:
+            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4 
+            print(f"That's a {WINNING} answer !")
+        except (IndexError, TypeError):
+            print('Please choose a number between 1 and 4')
+            print("\nWhat is the capital of " + country_name + " ? ")
+            user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4 
+            print(f"That's a {WINNING} answer !")
+
+        print("\nLet's now moove to ...") 
+        spinner = Spinner('')
+        start_time = time.time()
+        while time.time() - start_time < 2:
+            time.sleep(0.2)
+            spinner.next()
+        print('\n')
+        # Choose border country
+        try:
+            country_name = random.shuffle(df_countries[df_countries['country_name']==country_name].country2Label.values[0])[0]
+        except TypeError:
+            print('It seems the country does not have any neighbour')
+            country_name = random.shuffle(df_countries.country_name.values)[0]
+        print(country_name)
+        time.sleep(1)
+
+    ROUND +=1
+    print(f'Starting round {ROUND}')
+>>>>>>> 9452e50480fd6eb000e2cc5118850f96119c8486
