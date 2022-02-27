@@ -21,9 +21,14 @@ pip install -r requirements.txt
 
 To run the game, you can either: 
 
+0. Running the SPARQL queries to gather the data 
+```bash
+python3 queries.py
+```
+
 1. Run the command line interface of the game 
 ```bash
-python3 main.py
+python3 game.py
 ```
 
 2. Use the front-end with streamlit
@@ -43,28 +48,42 @@ streamlit run streamlit.py
 │   ├── Albania_flag.png
 │   ├── .... 
 │   └── Zimbabwe_flag.png
-├── game.py # Game mechanisms
-├── main.py # CLI for the game 
+├── data
+│   └── countries.csv 
+├── game.py #Mechanisms and CLI for the game 
 ├── notebooks
 │   ├── sparql_test.ipynb 
 │   └── tests.ipynb
 ├── queries
-│   └── sparql_query.txt
+│   ├── sparql_query.txt #Querying DBPedia
+│   └── sparql_wikidata_query.txt #Querying WikiData
 ├── queries.py #Querying DBPedia & Wikidata for data
+├── questions.py #Creatin questions
 ├── requirements.txt 
 ├── streamlit.py #Front-end for the game
-└── test.py
+├── test_pytest.py
+└── utils
+    ├── helpers.py
+    └── map.py
 ```
+### :warning: Technical choice
+
+We chose to compute two full SPARQL request and then use a structured dabase for three reasons:
+1. the latency of the SPARQL requests 
+2. the need of a network connection to use the game
+3. the need of full data to train our NLP model
 
 ### TO DO LIST
 
 - [x] Packaging du code @ArianeDlns -> `main.py`
-- [ ] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR -> `game.py`
+- [x] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR -> `game.py`
 - [x] Pays adjacents @ArianeDlns  -> `queries/sparql_wikidata_query.txt`
-- [ ] MVP du jeu @ArianeDlns @Lucas-SOR
+- [x] MVP du jeu @ArianeDlns @Lucas-SOR
 - [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
-- [ ] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
+- [x] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
 - [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
 - [ ] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
+- [ ] Fix missing countries @Lucas-SOR
+- [ ] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
 
 ## References 

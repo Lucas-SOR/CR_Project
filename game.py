@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 import random
 from questions import *
+from queries import load_fulldata
 
 global NB_ROUNDS
 global NB_PLAYERS
-
 
 def start_game(verbose: bool = True):
     """
@@ -17,6 +17,7 @@ def start_game(verbose: bool = True):
     if verbose:
         print("=============================")
         spinner = Spinner('Loading game |||')
+        df_countries = pd.read_csv('data/countries.csv')
         start_time = time.time()
         while time.time() - start_time < 5:
             time.sleep(0.2)
@@ -29,8 +30,6 @@ def start_game(verbose: bool = True):
         NB_ROUNDS = userInput
         userInput = input("\nHow many player are there? ")
         NB_PLAYERS = userInput
-
-    df_countries = pd.read_csv('data/countries.csv')
 
     country_list = get_country_list(df_countries)
     # Pick a random first country 
@@ -90,13 +89,47 @@ if __name__ == '__main__':
     playing = True
 
     # Loading the countries and first country
-    df_countries, country_name = start_game()
+    try: 
+        df_countries, country_name = start_game()
+    except FileNotFoundError:
+        countries = load_fulldata()
+        countries.to_csv('data/countries.csv')
+        df_countries, country_name = start_game()
 
     country_list = get_country_list(df_countries)
-
     country_capital_dict = get_country_capital_dict(df_countries)
 
-    country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
-    print("\nWhat is the capital of " + country_name + " ? ")
-    user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
-    print(evaluate_country_capital_question(country_capital_list, d, user_input))
+    ROUND = 0
+    WINNING = True
+    while WINNING:
+        country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
+        print("\nWhat is the capital of " + country_name + " ? ")
+        user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+        try:
+            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4 
+            print(f"That's a {WINNING} answer !")
+        except (IndexError, TypeError):
+            print('Please choose a number between 1 and 4')
+            print("\nWhat is the capital of " + country_name + " ? ")
+            user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4 
+            print(f"That's a {WINNING} answer !")
+
+        print("\nLet's now moove to ...") 
+        spinner = Spinner('')
+        start_time = time.time()
+        while time.time() - start_time < 2:
+            time.sleep(0.2)
+            spinner.next()
+        print('\n')
+        # Choose border country
+        try:
+            country_name = random.shuffle(df_countries[df_countries['country_name']==country_name].country2Label.values[0])[0]
+        except TypeError:
+            print('It seems the country does not have any neighbour')
+            country_name = random.shuffle(df_countries.country_name.values)[0]
+        print(country_name)
+        time.sleep(1)
+
+    ROUND +=1
+    print(f'Starting round {ROUND}')
