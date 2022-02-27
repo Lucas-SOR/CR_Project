@@ -84,6 +84,6 @@ We chose to compute two full SPARQL request and then use a structured dabase for
 - [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
 - [ ] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
 - [ ] Fix missing countries @Lucas-SOR
-- [ ] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
+- [x] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
 
 ## References 

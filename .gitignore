@@ -140,3 +140,6 @@ solution/
 references/
 notebooks/s2v_model
 notebooks/._s2v_model
+
+s2v_model
+._s2v_model

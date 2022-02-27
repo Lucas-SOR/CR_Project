@@ -99,13 +99,6 @@ if __name__ == '__main__':
     country_list = get_country_list(df_countries)
     country_capital_dict = get_country_capital_dict(df_countries)
 
-<<<<<<< HEAD
-    country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
-    print("\nWhat is the capital of " + country_name + " ? ")
-    user_input = input('The choices are: ' + ', '.join(country_capital_list) + '\n ')
-    b = evaluate_country_capital_question(country_capital_list, d, user_input)
-    print(b)
-=======
     ROUND = 0
     WINNING = True
     while WINNING:
@@ -140,4 +133,3 @@ if __name__ == '__main__':
 
     ROUND +=1
     print(f'Starting round {ROUND}')
->>>>>>> 9452e50480fd6eb000e2cc5118850f96119c8486
