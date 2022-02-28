@@ -424,7 +424,7 @@ def evaluate_abstract_question(answers, verify_answer, user_input):
 # GLOBAL
 # ----------------------------------------------------------------------------------------------------------------------
 
-def generate_random_question(countries, country_name, country_list, country_population_dict, country_capital_dict, sentencizer = get_sentencizer(), ner_model = get_ner_model(), s2v = Sense2Vec().from_disk('s2v_model'),  allow_FLAG: bool = False):
+def generate_random_question(countries, country_name, country_list, country_population_dict, country_capital_dict, sentencizer, ner_model, s2v,  allow_FLAG: bool = False):
     """
     Pick a random question 
     Returns : 
@@ -438,37 +438,55 @@ def generate_random_question(countries, country_name, country_list, country_popu
     pick = question[0]
     if pick == 'Population':
         error_margin = 0.1
-        interval = generate_population_question(country_name, error_margin, country_population_dict)
-        print("\nWhat is the population of " + country_name + " (with a 10% margin error) ? ")
+        interval = generate_population_question(
+            country_name, error_margin, country_population_dict)
+        print("\nWhat is the population of " +
+              country_name + " (with a 10% margin error) ? ")
         user_input = input("\n")
-        WINNING =  evaluate_population_question(interval, user_input)  
+        WINNING = evaluate_population_question(interval, user_input)
     elif pick == 'Capital':
-        country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
+        country_capital_list, d = generate_country_capital_question(
+            country_name, country_list, country_capital_dict)
         print("\nWhat is the capital of " + country_name + " ? ")
-        user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+        user_input = input('The choices are: ' +
+                           ', '.join(country_capital_list) + "\n")
         try:
-            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4 
+            WINNING = evaluate_country_capital_question(
+                country_capital_list, d, int(user_input)-1)  # Choice between 1 and 4
         except (IndexError, TypeError):
             print('Please choose a number between 1 and 4')
             print("\nWhat is the capital of " + country_name + " ? ")
-            user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
-            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4  
+            user_input = input('The choices are: ' +
+                               ', '.join(country_capital_list) + "\n")
+            WINNING = evaluate_country_capital_question(
+                country_capital_list, d, int(user_input)-1)  # Choice between 1 and 4
     elif pick == 'Flag':
         pass
     else:
         try:
-            index = countries[countries['country_name']==country_name].index.values[0]
-            question, answers, verify_answer  =  get_abstract_question_from_index(countries, index, s2v, sentencizer, ner_model)
-            print("Question : " + question)
-            user_input = input('The choices are: ' + ', '.join(answers) + "\n")
-            try:
-                WINNING = evaluate_abstract_question(answers, verify_answer, int(user_input)-1)  #Choice between 1 and 4 
-            except (IndexError, TypeError):
-                print('Please choose a number between 1 and 4')
-                print("\nWhat is the capital of " + country_name + " ? ")
-                user_input = input('The choices are: ' + ', '.join(answers) + "\n")
-                WINNING = evaluate_abstract_question(answers, verify_answer, int(user_input)-1) #Choice between 1 and 4  
-        except: 
+            index = countries[countries['country_name']
+                              == country_name].index.values[0]
+            question, answers, verify_answer = get_abstract_question_from_index(
+                countries, index, s2v, sentencizer, ner_model)
+            if question != 'Question was badly generated, please validate any answer to validate and move on':
+                print("Question : " + question)
+                user_input = input('The choices are: ' +
+                                   ', '.join(answers) + "\n")
+                try:
+                    WINNING = evaluate_abstract_question(
+                        answers, verify_answer, int(user_input)-1)  # Choice between 1 and 4
+                except (IndexError, TypeError):
+                    print('Please choose a number between 1 and 4')
+                    print("\nWhat is the capital of " + country_name + " ? ")
+                    user_input = input('The choices are: ' +
+                                       ', '.join(answers) + "\n")
+                    WINNING = evaluate_abstract_question(
+                        answers, verify_answer, int(user_input)-1)  # Choice between 1 and 4
+            else:
+                WINNING = generate_random_question(
+                    countries, country_name, country_list, country_population_dict, country_capital_dict, sentencizer, ner_model, s2v)
+        except:
             print("Question generation failed")
-            generate_random_question(countries,country_name, country_list, country_capital_dict)
+            generate_random_question(
+                countries, country_name, country_list, country_capital_dict)
     return WINNING

@@ -83,15 +83,16 @@ We chose to compute two full SPARQL request and then use a structured dabase for
 
 ### TO DO LIST
 
-- [x] Packaging du code @ArianeDlns -> `main.py`
+- [x] Packaging du code @ArianeDlns
 - [x] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR -> `game.py`
 - [x] Pays adjacents @ArianeDlns  -> `queries/sparql_wikidata_query.txt`
-- [x] MVP du jeu @ArianeDlns @Lucas-SOR
+- [x] MVP du jeu @ArianeDlns @Lucas-SOR -> `game.py`
+- [x] Fix missing countries @Lucas-SOR
 - [x] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
-- [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
+- [x] Front-end en streamlit @ArianeDlns @Lucas-SOR
 - [x] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
 - [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
-- [ ] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
-- [ ] Fix missing countries @Lucas-SOR
+- [x] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
+
 
 ## References 

@@ -111,16 +111,6 @@ if __name__ == '__main__':
 
         WINNING = generate_random_question(
             df_countries, country_name, country_list, country_population_dict, country_capital_dict, sentencizer, ner_model, s2v)
-        #country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
-        #print("\nWhat is the capital of " + country_name + " ? ")
-        #user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
-        # try:
-        #    WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4
-        # except (IndexError, TypeError):
-        #    print('Please choose a number between 1 and 4')
-        #    print("\nWhat is the capital of " + country_name + " ? ")
-        #    user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
-        #    WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4
 
         print(f"That's a {WINNING} answer !")
         if not WINNING:
