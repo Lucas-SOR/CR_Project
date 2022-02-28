@@ -10,6 +10,7 @@ from queries import load_fulldata
 global NB_ROUNDS
 #global NB_PLAYERS
 
+
 def start_game(verbose: bool = True):
     """
     Starting the game
@@ -32,11 +33,11 @@ def start_game(verbose: bool = True):
         #NB_PLAYERS = userInput
 
     country_list = get_country_list(df_countries)
-    # Pick a random first country 
+    # Pick a random first country
     country_name = country_list[np.random.randint(0, len(country_list))]
 
     if verbose:
-        print("\nLet's starting in ....") 
+        print("\nLet's starting in ....")
         spinner = Spinner('')
         start_time = time.time()
         while time.time() - start_time < 2:
@@ -50,6 +51,7 @@ def start_game(verbose: bool = True):
 # ----------------------------------------------------------------------------------------------------------------------
 # UTILS
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 def get_country_list(df_countries):
     """
@@ -88,7 +90,7 @@ def get_country_capital_dict(df_countries):
 if __name__ == '__main__':
     playing = True
     # Loading the countries and first country
-    try: 
+    try:
         NB_ROUNDS, df_countries, country_name = start_game()
     except FileNotFoundError:
         countries = load_fulldata()
@@ -97,53 +99,66 @@ if __name__ == '__main__':
 
     country_list = get_country_list(df_countries)
     country_capital_dict = get_country_capital_dict(df_countries)
+    country_population_dict = get_country_population_dict(df_countries)
 
     SCORE = 0
     NB_ERROR = 0
-    while NB_ERROR < int(NB_ROUNDS) :
+    sentencizer = get_sentencizer()
+    ner_model = get_ner_model()
+    s2v = Sense2Vec().from_disk('s2v_model')
 
-        country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
-        print("\nWhat is the capital of " + country_name + " ? ")
-        user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+    while NB_ERROR < int(NB_ROUNDS):
 
-        try:
-            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4 
-        except (IndexError, TypeError):
-            print('Please choose a number between 1 and 4')
-            print("\nWhat is the capital of " + country_name + " ? ")
-            user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
-            WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4 
+        WINNING = generate_random_question(
+            df_countries, country_name, country_list, country_population_dict, country_capital_dict, sentencizer, ner_model, s2v)
+        #country_capital_list, d = generate_country_capital_question(country_name, country_list, country_capital_dict)
+        #print("\nWhat is the capital of " + country_name + " ? ")
+        #user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+        # try:
+        #    WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1)  #Choice between 1 and 4
+        # except (IndexError, TypeError):
+        #    print('Please choose a number between 1 and 4')
+        #    print("\nWhat is the capital of " + country_name + " ? ")
+        #    user_input = input('The choices are: ' + ', '.join(country_capital_list) + "\n")
+        #    WINNING = evaluate_country_capital_question(country_capital_list, d, int(user_input)-1) #Choice between 1 and 4
 
         print(f"That's a {WINNING} answer !")
-        if not WINNING :
-            NB_ERROR += 1 
+        if not WINNING:
+            NB_ERROR += 1
             if NB_ERROR < int(NB_ROUNDS):
                 print(f'Starting round {NB_ERROR+1}')
-        else: 
+        else:
             SCORE += 1
 
         if NB_ERROR < int(NB_ROUNDS):
-            print("\nLet's now moove to ...") 
+            print("\nLet's now moove to ...")
             spinner = Spinner('')
             start_time = time.time()
             while time.time() - start_time < 2:
                 time.sleep(0.2)
                 spinner.next()
             print('\n')
+
             # Choose border country
             try:
                 prev_country = country_name
-                country_name = df_countries[df_countries['country_name']==prev_country].country2Label.values[0].replace('[','').replace(']','').replace("'",'').split(',')[0]
-                
+                country_name = df_countries[df_countries['country_name'] == prev_country].country2Label.values[0].replace(
+                    '[', '').replace(']', '').replace("'", '').split(',')[0]
+
                 # Removing country
-                df_countries.loc[df_countries['country_name']==prev_country,'country2Label'] = df_countries[df_countries['country_name']==prev_country].country2Label.values[0].replace("'"+country_name+"',",'')
-                df_countries.loc[df_countries['country_name']==country_name,'country2Label'] = df_countries[df_countries['country_name']==country_name].country2Label.values[0].replace("'"+prev_country+"',",'')
-            except (TypeError,AttributeError,KeyError,IndexError):
-                print('It seems the country does not have any neighbour')
-                country_name = random.sample(list(df_countries.country_name.values), len(df_countries))[0]
+                df_countries.loc[df_countries['country_name'] == prev_country, 'country2Label'] = df_countries[df_countries['country_name']
+                                                                                                               == prev_country].country2Label.values[0].replace("'"+country_name+"',", '')
+                df_countries.loc[df_countries['country_name'] == country_name, 'country2Label'] = df_countries[df_countries['country_name']
+                                                                                                               == country_name].country2Label.values[0].replace("'"+prev_country+"',", '')
+
+            except (TypeError, AttributeError, KeyError, IndexError):
+                print('It seems the country does not have any more neighbour')
+                country_name = random.sample(
+                    list(df_countries.country_name.values), len(df_countries))[0]
 
             print(country_name)
         time.sleep(1)
-    
+
+    time.sleep(1)
+    os.system('cls' if os.name == 'nt' else 'clear')
     print(f"Ending the game with a score of {SCORE}")
-    
