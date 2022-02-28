@@ -13,15 +13,16 @@ from sense2vec import Sense2Vec
 def get_country_list(df_countries):
     """
     From the countries df returns the list of countries
-    
+
     Function arguments : 
     - df_countries : the countries df
-    
+
     Returns :
     - country_list : a list of all country names
     """
     country_list = df_countries["country_name"].tolist()
     return country_list
+
 
 def get_country_capital_dict(df_countries):
     """
@@ -29,7 +30,7 @@ def get_country_capital_dict(df_countries):
 
     Function arguments : 
     - df_countries : the countries df
-    
+
     Return :
     - country_capital_dict : a dict such that dict[country_name] = country_capital
     """
@@ -41,7 +42,7 @@ def get_country_capital_dict(df_countries):
         country_capital_dict[keys[i]] = values[i]
 
     return country_capital_dict
-    
+
 
 def get_country_population_dict(df_countries):
     """
@@ -66,8 +67,6 @@ def get_country_population_dict(df_countries):
 # POPULATION
 # ----------------------------------------------------------------------------------------------------------------------
 
-
-    
 
 def generate_population_question(country_name, error_margin, country_population_dict):
     """
@@ -231,6 +230,7 @@ def evaluate_country_flag_question(country_flag_filename_list, d, user_input):
 # NLP
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 def get_sentencizer():
     """
     Get the sentencizer
@@ -240,6 +240,7 @@ def get_sentencizer():
     sentencizer = English()
     sentencizer.add_pipe('sentencizer')
     return sentencizer
+
 
 def get_sentences(text, sentencizer):
     """
@@ -260,6 +261,7 @@ def get_sentences(text, sentencizer):
 
     return sentences
 
+
 def get_ner_model():
     """
     Get the ner_model
@@ -270,9 +272,11 @@ def get_ner_model():
     ner_model = spacy.load("en_core_web_sm")
     return ner_model
 
+
 def get_s2v():
     s2v = Sense2Vec().from_disk('s2v_model')
     return s2v
+
 
 def extract_person_gpe(text, ner_model, sentencizer, country_name):
     """
@@ -282,7 +286,7 @@ def extract_person_gpe(text, ner_model, sentencizer, country_name):
     - text : the text from which to extract the keyphrases
     - ner_model : the ner_model from spacy
     - sentencizer : the sentencizer model
-    
+
     Returns :
     sentence_keyword_dict : a dict such that dict[sentence] = list of keywords 
     """
@@ -291,21 +295,21 @@ def extract_person_gpe(text, ner_model, sentencizer, country_name):
 
     sentence_keyword_dict = {}
 
-    for sentence in sentence_list :
+    for sentence in sentence_list:
         doc = ner_model(sentence)
         keywords = []
         for ent in doc.ents:
             if ent.label_ in ["GPE", "PERSON"]:
                 if ent.text != country_name:
                     keywords.append(ent.text)
-            
+
         if keywords != []:
             sentence_keyword_dict[sentence] = keywords
 
     return sentence_keyword_dict
 
-def generate_distractors_from_word(word, s2v):
 
+def generate_distractors_from_word(word, s2v):
     """
     Generates a distractor list from a given word
 
@@ -335,14 +339,14 @@ def generate_distractors_from_word(word, s2v):
     for distractor in disctractors_list:
         if distractor.lower() == word:
             to_remove.append(distractor)
-    
+
     for distractor in to_remove:
         disctractors_list.remove(distractor)
 
     return random.choices(disctractors_list, k=3)
 
-def get_abstract_question_from_index(df_countries, index, s2v, sentencizer, ner_model):
 
+def get_abstract_question_from_index(df_countries, index, s2v, sentencizer, ner_model):
     """
     Generates a question from and index of the dataset
 
@@ -358,14 +362,15 @@ def get_abstract_question_from_index(df_countries, index, s2v, sentencizer, ner_
     - answers : a list of 4 possible answers, one true and three disctractors
     - verify_answer : a dict such that verify_answer[answer] == True if and only if the answer is the good one for the question
     """
-    
-    try :
+
+    try:
 
         country_name = df_countries["country_name"][index]
 
         summarized_abstract = df_countries["country_summarized_abstract"][index]
-        
-        sentence_keyword_dict = extract_person_gpe(summarized_abstract, ner_model, sentencizer, country_name)
+
+        sentence_keyword_dict = extract_person_gpe(
+            summarized_abstract, ner_model, sentencizer, country_name)
 
         sentence = random.choice(list(sentence_keyword_dict.keys()))
 
@@ -382,22 +387,21 @@ def get_abstract_question_from_index(df_countries, index, s2v, sentencizer, ner_
         random.shuffle(answers)
 
         verify_answer = {}
-        for answer in answers : 
+        for answer in answers:
             if answer == keyword:
                 verify_answer[answer] = True
             else:
                 verify_answer[answer] = False
-        
+
         return question, answers, verify_answer
 
-    except :
+    except:
         BADLY_GENERATED_QUESTION = "Question was badly generated, please validate any answer to validate and move on"
         BADLY_GENERATED_ANSWERS = ["Any answer" for _ in range(4)]
-        BADLY_GENERATED_D = {k : True for k in BADLY_GENERATED_ANSWERS}
+        BADLY_GENERATED_D = {k: True for k in BADLY_GENERATED_ANSWERS}
 
         return BADLY_GENERATED_QUESTION, BADLY_GENERATED_ANSWERS, BADLY_GENERATED_D
 
-   
 
 def evaluate_abstract_question(answers, verify_answer, user_input):
     """
@@ -414,7 +418,7 @@ def evaluate_abstract_question(answers, verify_answer, user_input):
     user_answer = answers[int(user_input)]
     evaluation = verify_answer[user_answer]
     return evaluation
-   
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # GLOBAL
@@ -430,7 +434,8 @@ def generate_random_question(allow_FLAG: bool = False):
         question = ['Population', 'Capital', 'Flag', 'NLP']
     else:
         question = ['Population', 'Capital', 'NLP']
-    pick = random.shuffle(question)[0]
+    random.shuffle(question)
+    pick = question[0]
     if pick == 'Population':
         pass
     elif pick == 'Capital':

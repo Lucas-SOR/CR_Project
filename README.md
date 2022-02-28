@@ -23,7 +23,7 @@ Then download the [s2v_model](https://github.com/explosion/sense2vec/releases/do
 
 To run the game, you can either: 
 
-0. Running the SPARQL queries to gather the data 
+0. Running the SPARQL queries to gather the data - this step include the sumarization which takes some times, you can skip it by downloading the countries.csv file directly
 ```bash
 python3 queries.py
 ```

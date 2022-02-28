@@ -5,4 +5,7 @@ plotly==5.3.1
 progress==1.5
 pycountry==22.1.10
 requests==2.26.0
+sense2vec==2.0.0
+spacy==3.2.1
 SPARQLWrapper==1.8.5
+transformers==4.15.0

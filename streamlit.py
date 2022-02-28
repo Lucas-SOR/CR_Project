@@ -121,22 +121,25 @@ def get_question():
 
 
 st.sidebar.image("https://media.giphy.com/media/mf8UbIDew7e8g/giphy.gif")
-NB_PLAYERS = st.sidebar.selectbox(
-    "Nombre de joueurs:", [1, 2, 3, 4, 5])
+#NB_PLAYERS = st.sidebar.selectbox(
+#    "Nombre de joueurs:", [1, 2, 3, 4, 5])
 NB_ROUNDS = st.sidebar.selectbox(
     "Nombre de rounds:", [1, 2, 3, 4, 5])
+NB_ERREURS = 0
+st.sidebar.write(f"Nombre d'erreurs: {NB_ERREURS}")
 
-# game_data['played'] = game_data.apply(lambda x: False, axis=1) # A changer pour pas changer la valeur de game_data (immutable), faut faire une copie en fait
-# st.plotly_chart(show_map_game(game_data), use_container_width=False)
+#game = game_data[['country_name','ISO']].copy()
+#game['played'] = game.apply(lambda x: False, axis=1) # A changer pour pas changer la valeur de game_data (immutable), faut faire une copie en fait
+#st.plotly_chart(show_map_game(game), use_container_width=False)
 
-idx = st.number_input("index dans le CSV", min_value=0,
-                      max_value=len(game_data)-1)
+country = st.selectbox("Select country", game_data.country_name.values)
+idx = game_data[game_data['country_name']==country].index.values[0]
+#st.number_input("Index dans le CSV", min_value=0,
+#                      max_value=len(game_data)-1)
 
 st.button("Generate_question !", on_click=get_question)
 
-
 if st.session_state.show_question:
-
     st.write(f"You are in {st.session_state.country_name} !")
 
     #st.write(st.session_state.question_type, st.session_state.show_question)  # For debug
@@ -181,24 +184,33 @@ if st.session_state.show_question:
             "Answer (index of solution)", min_value=0, max_value=3)
 
     st.button("Validate answer", on_click=show_answer)
-    
+
 if st.session_state.show_answer:
 
     if st.session_state.question_type == 0:  # Population
         st.session_state.current_answer = game_data["country_population"][idx]
         st.write(evaluate_population_question(st.session_state.current_proposals,
                  st.session_state.user_input), f"Correct population was : {st.session_state.current_answer} !")
+        if not(evaluate_abstract_question(st.session_state.current_proposals, st.session_state.d,
+                 st.session_state.user_input)):
+                 NB_ERREURS+=1
 
     if st.session_state.question_type == 1:  # Capitals
         st.session_state.current_answer = game_data["capital_name"][idx]
         st.write(evaluate_country_capital_question(st.session_state.current_proposals, st.session_state.d,
                  st.session_state.user_input), f"Correct capital was : {st.session_state.current_answer} !")
+        if not(evaluate_abstract_question(st.session_state.current_proposals, st.session_state.d,
+                 st.session_state.user_input)):
+                 NB_ERREURS+=1
 
     if st.session_state.question_type == 2:  # Flags
         st.write(evaluate_country_flag_question(st.session_state.current_proposals,
                  st.session_state.d, st.session_state.user_input), f"Correct flag was : ")
         st.image(Image.open("country_flags/" +
                  st.session_state.country_name + "_flag.png"))
+        if not(evaluate_abstract_question(st.session_state.current_proposals, st.session_state.d,
+                 st.session_state.user_input)):
+                 NB_ERREURS+=1
 
     if st.session_state.question_type == 3:  # QG
         for key in st.session_state.current_proposals:
@@ -206,3 +218,6 @@ if st.session_state.show_answer:
                 st.session_state.current_answer = key
         st.write(evaluate_abstract_question(st.session_state.current_proposals, st.session_state.d,
                  st.session_state.user_input), f"Correct answer was : {st.session_state.current_answer} !")
+        if not(evaluate_abstract_question(st.session_state.current_proposals, st.session_state.d,
+                 st.session_state.user_input)):
+                 NB_ERREURS+=1
