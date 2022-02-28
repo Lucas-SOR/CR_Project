@@ -124,10 +124,11 @@ if __name__ == '__main__':
         print('\n')
         # Choose border country
         try:
-            country_name = random.shuffle(df_countries[df_countries['country_name']==country_name].country2Label.values[0])[0]
+            country_name = df_countries[df_countries['country_name']==country_name].country2Label.values[0].replace('[','').replace(']','').replace("'",'').split(',')[0]
         except TypeError:
             print('It seems the country does not have any neighbour')
-            country_name = random.shuffle(df_countries.country_name.values)[0]
+            country_name = random.sample(df_countries.country_name.values, len(df_countries))[0]
+            
         print(country_name)
         time.sleep(1)
 

@@ -135,7 +135,6 @@ credentials.yml
 .vscode/
 
 # Remove data, solution & references folders
-data/
 solution/
 references/
 notebooks/s2v_model

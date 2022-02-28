@@ -19,6 +19,8 @@ First install the required dependancies:
 pip install -r requirements.txt
 ```
 
+Then download the [s2v_model](https://github.com/explosion/sense2vec/releases/download/v1.0.0/s2v_reddit_2015_md.tar.gz) and add the s2v_model folder according to the structure of the project.
+
 To run the game, you can either: 
 
 0. Running the SPARQL queries to gather the data 
@@ -60,6 +62,12 @@ streamlit run streamlit.py
 ├── queries.py #Querying DBPedia & Wikidata for data
 ├── questions.py #Creatin questions
 ├── requirements.txt 
+├── s2v_model #S2V model that need to be downloaded
+│   ├── cfg
+│   ├── freqs.json
+│   ├── key2row
+│   ├── strings.json
+│   └── vectors
 ├── streamlit.py #Front-end for the game
 ├── test_pytest.py
 └── utils
@@ -79,11 +87,11 @@ We chose to compute two full SPARQL request and then use a structured dabase for
 - [x] Développer les questions (Drapeaux/Capitales/Population) @ArianeDlns @Lucas-SOR -> `game.py`
 - [x] Pays adjacents @ArianeDlns  -> `queries/sparql_wikidata_query.txt`
 - [x] MVP du jeu @ArianeDlns @Lucas-SOR
+- [x] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
 - [ ] Front-end en streamlit @ArianeDlns @Lucas-SOR
 - [x] Développement de Question Answering (NLP) sur les abstract par pays  @Lucas-SOR
 - [ ] Score de similarité par drapeau @Lucas-SOR [Pas priori]
 - [ ] Rapport sur Overleaf @ArianeDlns @Lucas-SOR
 - [ ] Fix missing countries @Lucas-SOR
-- [x] Adding summarization steps in queries.py to generate countries.csv @Lucas-SOR
 
 ## References 
