@@ -155,7 +155,7 @@ if st.session_state.show_question:
                      st.session_state.current_proposals[2*i+1])
 
         st.session_state.user_input = st.number_input(
-            "Answer (index of solution)", min_value=0)
+            "Answer (index of solution)", min_value=0, max_value=3)
 
     if st.session_state.question_type == 2:  # Flags
         c1, c2 = st.columns(2)
@@ -167,7 +167,7 @@ if st.session_state.show_question:
             c2.image(Image.open(st.session_state.current_proposals[2*i+1]))
 
         st.session_state.user_input = st.number_input(
-            "Answer (index of solution)", min_value=0)
+            "Answer (index of solution)", min_value=0, max_value=3)
 
     if st.session_state.question_type == 3:  # QG
         c1, c2 = st.columns(2)
@@ -178,7 +178,7 @@ if st.session_state.show_question:
                      st.session_state.current_proposals[2*i+1])
 
         st.session_state.user_input = st.number_input(
-            "Answer (index of solution)", min_value=0)
+            "Answer (index of solution)", min_value=0, max_value=3)
 
     st.button("Validate answer", on_click=show_answer)
     
